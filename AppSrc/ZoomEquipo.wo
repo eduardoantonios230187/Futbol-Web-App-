@@ -40,13 +40,12 @@ Object oZoomEquipo is a cWebView
             Set piColumnSpan to 12
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Nombre"
+            Set psLabel to "Liga"
             Set pbPromptButton to True
 
-// ToDo: Fill in the from-child parent Select view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oSelectView
+            WebRegisterPath ntNavigateForward oZoomLiga  //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
 
-            Procedure OnPrompt
+            Procedure OnPrompt  //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
                 Send NavigatePath
             End_Procedure
         End_Object 
@@ -56,31 +55,9 @@ Object oZoomEquipo is a cWebView
             Set piColumnSpan to 10
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Pais"
-            Set pbPromptButton to True
+            Set psLabel to "Pais de liga"
+            Set pbPromptButton to False
 
-// ToDo: Fill in the from-child parent Select view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oSelectView
-
-            Procedure OnPrompt
-                Send NavigatePath
-            End_Procedure
-        End_Object 
-
-        Object oligaEquipos is a cWebForm
-            Entry_Item liga.Equipos
-            Set piColumnSpan to 2
-            Set piColumnIndex to 0
-            Set peLabelPosition to lpTop
-            Set psLabel to "Equipos"
-        End_Object 
-
-        Object oligaEquiposMax is a cWebForm
-            Entry_Item liga.EquiposMax
-            Set piColumnSpan to 2
-            Set piColumnIndex to 0
-            Set peLabelPosition to lpTop
-            Set psLabel to "EquiposMax"
         End_Object 
 
         Object oequipoNombre is a cWebForm
@@ -88,7 +65,7 @@ Object oZoomEquipo is a cWebView
             Set piColumnSpan to 12
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Nombre"
+            Set psLabel to "Equipo"
         End_Object 
     End_Object 
 
