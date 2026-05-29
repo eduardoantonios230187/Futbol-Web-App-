@@ -45,8 +45,8 @@ Object oZoomPosicion is a cWebView
             Set psCSSClass to "WebSaveMenuItem"
             Set psCaption to "Save"
 
-            Procedure OnClick
-                Send Request_Save
+            Procedure OnClick //Evento que se produce al hacer clic
+                Send Request_Save //Guarda
             End_Procedure
 
         End_Object 
@@ -54,8 +54,9 @@ Object oZoomPosicion is a cWebView
         Object oEditBtn is a cWebMenuItem
             Set psCSSClass to "WebEditMenuItem"
             Set psCaption to "Edit"
-            Procedure OnClick
-                Send ChangeEditMode True
+            
+            Procedure OnClick //Evento que se produce al hacer clic
+                Send ChangeEditMode True //Editamos
                 Send SetActionButtons
             End_Procedure
 
@@ -66,8 +67,8 @@ Object oZoomPosicion is a cWebView
             Set psCaption to "Delete"
             Set peActionDisplay to adMenu
 
-            Procedure OnClick
-                Send Request_Delete
+            Procedure OnClick //Evento que se produce al hacer clic
+                Send Request_Delete //Eliminamos
             End_Procedure
 
         End_Object 
@@ -76,8 +77,9 @@ Object oZoomPosicion is a cWebView
             Set psCSSClass to "WebIcon_Refresh"
             Set psCaption to "Clear Changes"
             Set peActionDisplay to adMenu
-            Procedure OnClick
-                Send RefreshRecord
+            
+            Procedure OnClick //Evento que se produce al hacer clic
+                Send RefreshRecord //Actualizamos la información
             End_Procedure
 
         End_Object 
@@ -108,17 +110,16 @@ Object oZoomPosicion is a cWebView
         End
     End_Procedure
 
-    Procedure OnViewSaved Handle hoServer Boolean bChanged
-        // Close after save
-        Send NavigateClose Self
+    Procedure OnViewSaved Handle hoServer Boolean bChanged //OnViewSaved es un evento que se produce después de un guardado de vista exitoso (Request_Save). Un guardado es exitoso si no hubo errores 
+        Send NavigateClose Self //Luego de esto cierra la vista y vuelva a la anterior
     End_Procedure
 
     // this will close the view after a delete
-    Procedure OnViewDeleted Handle hoDDO
-        Send NavigateClose Self
+    Procedure OnViewDeleted Handle hoDDO //OnViewDeleted es un evento que se produce después de una eliminación de exitosa (Request_Delete). Una eliminación es exitosa si no hubo errores 
+        Send NavigateClose Self //Tras la eliminación cierra la vista y vuelve a la anterior
     End_Procedure
 
-    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
                 // If from main, this is a propbably a main file Select to Zoom.

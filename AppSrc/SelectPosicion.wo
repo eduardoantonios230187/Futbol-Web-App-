@@ -51,13 +51,14 @@ Object oSelectPosicion is a cWebView
             Set peAlign to alignRight
 
             WebRegisterPath ntNavigateForward oZoomPosicion
+//La navegación que se produce es from main, ya que son la misma tabla
 
-            Procedure OnClick
-                Send NavigatePath
+            Procedure OnClick //Se produce al hacer clic
+                Send NavigatePath //Nos lleva a la vista que hayamos puesto en el WebRegisterPath
             End_Procedure
 
-            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move True to NavigateData.bReadOnly
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+                Move True to NavigateData.bReadOnly //En este caso ReadOnly
             End_Procedure
 
         End_Object 
@@ -65,6 +66,7 @@ Object oSelectPosicion is a cWebView
 
 
         WebRegisterPath ntNavigateForward oZoomPosicion // Le indicamos a donde navegar. Utilizamos NavigateFordward porque SÍ hay intercambio de información
+//La navegación que se produce es from main, ya que son la misma tabla
 
         Procedure OnRowClick String sRowId //Este es el procedimiento que nos servirá para pinchar sobre la fila y que nos lleve directos al ZOOM que le hemos indicado en el WebRegisterPath
             tWebNavigateData NavigateData
@@ -91,8 +93,8 @@ Object oSelectPosicion is a cWebView
             Case End
         End_Procedure
 
-        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-            Move True to NavigateData.bReadOnly
+        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+            Move True to NavigateData.bReadOnly //En este caso ReadOnly
         End_Procedure
 
     End_Object 
@@ -103,8 +105,8 @@ Object oSelectPosicion is a cWebView
             Set psCSSClass to "WebPromptMenuItem"
             Set psCaption to "Search"
 
-            Procedure OnClick
-                Send Search of oList
+            Procedure OnClick //Al hacer clic
+                Send Search of oList //Buscamos en la lista
             End_Procedure
 
         End_Object 
@@ -115,18 +117,18 @@ Object oSelectPosicion is a cWebView
 
             WebRegisterPath ntNavigateForward oZoomPosicion
 
-            Procedure OnClick
-                Send NavigatePath
+            Procedure OnClick //Al hacer clic
+                Send NavigatePath //Nos lleva a la vista que hayamos colocado en el WebRegisterPath
             End_Procedure
 
-            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move True to NavigateData.bNewRecord
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+                Move True to NavigateData.bNewRecord //En este caso NewRecord
             End_Procedure
 
         End_Object 
     End_Object 
 
-    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject  //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
         WebSet pbRender of oNewButton to True
         WebSet pbRender of oDetailButton to True
 

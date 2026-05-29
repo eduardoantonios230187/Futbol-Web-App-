@@ -1,5 +1,5 @@
 Compiling Program: C:\DataFlex Projects\Futbol-Web-App-\AppSrc\WebApp.src
-Memory Available: 18298073088
+Memory Available: 16284315648
 1>Use AllWebAppClasses.pkg
 Using pre-compiled package ALLWEBAPPCLASSES.PKG
 Including file: AllWebAppClasses.x64.pkd    (C:\Program Files\DataFlex 25.0\Pkg\AllWebAppClasses.x64.pkd)
@@ -1766,6 +1766,7 @@ Including file: hijoentrenador.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc
 37615>>>//ESTO MISMO SE REPITE EN EL RESTO DE ZOOM
 37615>>>
 37615>>>            WebRegisterPath ntNavigateForward oZoomLiga //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
+37621>>>//La navegación que se produce es from child, ya que viaja de una tabla hija hacia una padre
 37621>>>
 37621>>>            Procedure OnPrompt //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
 37624>>>                Send NavigatePath
@@ -1791,6 +1792,7 @@ Including file: hijoentrenador.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc
 37644>>>
 37644>>>
 37644>>>            WebRegisterPath ntNavigateForward oZoomEquipo //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
+37650>>>//La navegación que se produce es from child, ya que la relación que estos mantienen es de hijo a padre
 37650>>>
 37650>>>            Procedure OnPrompt
 37653>>>                Send NavigatePath //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
@@ -1828,8 +1830,8 @@ Including file: hijoentrenador.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc
 37685>>>            Set psCSSClass to "WebSaveMenuItem"
 37686>>>            Set psCaption to "Save"
 37687>>>
-37687>>>            Procedure OnClick
-37690>>>                Send Request_Save
+37687>>>            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebSaveMenuItem
+37690>>>                Send Request_Save //Justo después de clicar el programa hace un RequestSave. Este se encarga de guardar los cambios
 37691>>>            End_Procedure
 37692>>>
 37692>>>        End_Object 
@@ -1837,8 +1839,9 @@ Including file: hijoentrenador.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc
 37693>>>        Object oEditBtn is a cWebMenuItem
 37695>>>            Set psCSSClass to "WebEditMenuItem"
 37696>>>            Set psCaption to "Edit"
-37697>>>            Procedure OnClick
-37700>>>                Send ChangeEditMode True
+37697>>>            
+37697>>>            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebEditMenuItem
+37700>>>                Send ChangeEditMode True //De esta manera podremos editar, pero en caso de que solo queramos que se pueda leer, bastará con llamar a IsViewReadOnly
 37701>>>                Send SetActionButtons
 37702>>>            End_Procedure
 37703>>>
@@ -1849,8 +1852,8 @@ Including file: hijoentrenador.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc
 37707>>>            Set psCaption to "Delete"
 37708>>>            Set peActionDisplay to adMenu
 37709>>>
-37709>>>            Procedure OnClick
-37712>>>                Send Request_Delete
+37709>>>            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebDeleteMenuItem
+37712>>>                Send Request_Delete //Al clicar se lleva a cabo la eliminación
 37713>>>            End_Procedure
 37714>>>
 37714>>>        End_Object 
@@ -1859,8 +1862,9 @@ Including file: hijoentrenador.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc
 37717>>>            Set psCSSClass to "WebIcon_Refresh"
 37718>>>            Set psCaption to "Clear Changes"
 37719>>>            Set peActionDisplay to adMenu
-37720>>>            Procedure OnClick
-37723>>>                Send RefreshRecord
+37720>>>            
+37720>>>            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebIcon_Refresh
+37723>>>                Send RefreshRecord //Al clicar se lleva a cabo la actualización de la información
 37724>>>            End_Procedure
 37725>>>
 37725>>>        End_Object 
@@ -1894,14 +1898,14 @@ Including file: hijoentrenador.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc
 37744>>>>
 37744>>>    End_Procedure
 37745>>>
-37745>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged
+37745>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged //OnViewSaved es un evento que se produce después de un guardado de vista exitoso (Request_Save). Un guardado es exitoso si no hubo errores 
 37748>>>        // Close after save
-37748>>>        Send NavigateClose Self
+37748>>>        Send NavigateClose Self //En este caso lo que hace es cerrar la vista y llevarnos a la vista de la que venimos
 37749>>>    End_Procedure
 37750>>>
 37750>>>    // this will close the view after a delete
-37750>>>    Procedure OnViewDeleted Handle hoDDO
-37753>>>        Send NavigateClose Self
+37750>>>    Procedure OnViewDeleted Handle hoDDO //OnViewDeleted es un evento que se produce después de una eliminación de exitosa (Request_Delete). Una eliminación es exitosa si no hubo errores 
+37753>>>        Send NavigateClose Self //En este caso lo que hace es cerrar la vista y llevarnos a la vista de la que venimos
 37754>>>    End_Procedure
 37755>>>
 37755>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
@@ -2033,14 +2037,14 @@ Including file: SelectEntrenador.wo    (C:\DataFlex Projects\Futbol-Web-App-\App
 37856>>>            Set psBtnCssClass to "WebButtonIcon WebIcon_Info"
 37857>>>            Set peAlign to alignRight
 37858>>>
-37858>>>            WebRegisterPath ntNavigateForward oZoomEntrenador
+37858>>>            WebRegisterPath ntNavigateForward oZoomEntrenador //La navegación que se produce es from main, ya que son la misma tabla
 37864>>>
 37864>>>            Procedure OnClick
 37867>>>                Send NavigatePath
 37868>>>            End_Procedure
 37869>>>
-37869>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-37872>>>                Move True to NavigateData.bReadOnly
+37869>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+37872>>>                Move True to NavigateData.bReadOnly //En este caso ReadOnly
 37873>>>            End_Procedure
 37874>>>
 37874>>>        End_Object 
@@ -2048,6 +2052,8 @@ Including file: SelectEntrenador.wo    (C:\DataFlex Projects\Futbol-Web-App-\App
 37875>>>
 37875>>>//ESTO MISMO SE REPITE EN EL RESTO DE SELECT
 37875>>>          WebRegisterPath ntNavigateForward oZoomEntrenador // Le indicamos a donde navegar. Utilizamos NavigateFordward porque SÍ hay intercambio de información
+37881>>>//La navegación que se produce es from main, ya que son la misma tabla
+37881>>>
 37881>>>
 37881>>>        Procedure OnRowClick String sRowId  //Este es el procedimiento que nos servirá para pinchar sobre la fila y que nos lleve directos al ZOOM que le hemos indicado en el WebRegisterPath
 37884>>>            tWebNavigateData NavigateData
@@ -2074,8 +2080,8 @@ Including file: SelectEntrenador.wo    (C:\DataFlex Projects\Futbol-Web-App-\App
 37900>>>            Case End
 37900>>>        End_Procedure
 37901>>>
-37901>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-37904>>>            Move True to NavigateData.bReadOnly
+37901>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+37904>>>            Move True to NavigateData.bReadOnly //Aquí le indica la información complentaria, en este caso, ReadOnly
 37905>>>        End_Procedure
 37906>>>
 37906>>>    End_Object 
@@ -2086,8 +2092,8 @@ Including file: SelectEntrenador.wo    (C:\DataFlex Projects\Futbol-Web-App-\App
 37911>>>            Set psCSSClass to "WebPromptMenuItem"
 37912>>>            Set psCaption to "Search"
 37913>>>
-37913>>>            Procedure OnClick
-37916>>>                Send Search of oList
+37913>>>            Procedure OnClick //Este es un evento que se produce al clicar
+37916>>>                Send Search of oList //Al clicar sobre el buscador podremos introducir lo que busquemos y nos devolverá de la lista los resultados que coincidan con nuestra búsqueda 
 37917>>>            End_Procedure
 37918>>>
 37918>>>        End_Object 
@@ -2098,18 +2104,18 @@ Including file: SelectEntrenador.wo    (C:\DataFlex Projects\Futbol-Web-App-\App
 37923>>>
 37923>>>            WebRegisterPath ntNavigateForward oZoomEntrenador
 37929>>>
-37929>>>            Procedure OnClick
-37932>>>                Send NavigatePath
+37929>>>            Procedure OnClick //Este es un evento que se produce al clicar
+37932>>>                Send NavigatePath //Al clicar seremos dirigidos hacia la vista que hayamos puesto en el WebRegisterPath
 37933>>>            End_Procedure
 37934>>>
-37934>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-37937>>>                Move True to NavigateData.bNewRecord
+37934>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+37937>>>                Move True to NavigateData.bNewRecord //En este caso NewRecord
 37938>>>            End_Procedure
 37939>>>
 37939>>>        End_Object 
 37940>>>    End_Object 
 37941>>>
-37941>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+37941>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject  //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 37944>>>        WebSet pbRender of oNewButton to True
 37945>>>        WebSet pbRender of oDetailButton to True
 37946>>>
@@ -2265,8 +2271,8 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38031>>>>>>>            Set psCSSClass to "WebSaveMenuItem"
 38032>>>>>>>            Set psCaption to "Save"
 38033>>>>>>>
-38033>>>>>>>            Procedure OnClick
-38036>>>>>>>                Send Request_Save
+38033>>>>>>>            Procedure OnClick //Evento que se produce al hacer clic
+38036>>>>>>>                Send Request_Save //Guarda
 38037>>>>>>>            End_Procedure
 38038>>>>>>>
 38038>>>>>>>        End_Object 
@@ -2274,8 +2280,9 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38039>>>>>>>        Object oEditBtn is a cWebMenuItem
 38041>>>>>>>            Set psCSSClass to "WebEditMenuItem"
 38042>>>>>>>            Set psCaption to "Edit"
-38043>>>>>>>            Procedure OnClick
-38046>>>>>>>                Send ChangeEditMode True
+38043>>>>>>>            
+38043>>>>>>>            Procedure OnClick //Evento que se produce al hacer clic
+38046>>>>>>>                Send ChangeEditMode True //Editamos
 38047>>>>>>>                Send SetActionButtons
 38048>>>>>>>            End_Procedure
 38049>>>>>>>
@@ -2286,8 +2293,8 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38053>>>>>>>            Set psCaption to "Delete"
 38054>>>>>>>            Set peActionDisplay to adMenu
 38055>>>>>>>
-38055>>>>>>>            Procedure OnClick
-38058>>>>>>>                Send Request_Delete
+38055>>>>>>>            Procedure OnClick //Evento que se produce al hacer clic
+38058>>>>>>>                Send Request_Delete //Eliminamos
 38059>>>>>>>            End_Procedure
 38060>>>>>>>
 38060>>>>>>>        End_Object 
@@ -2296,8 +2303,9 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38063>>>>>>>            Set psCSSClass to "WebIcon_Refresh"
 38064>>>>>>>            Set psCaption to "Clear Changes"
 38065>>>>>>>            Set peActionDisplay to adMenu
-38066>>>>>>>            Procedure OnClick
-38069>>>>>>>                Send RefreshRecord
+38066>>>>>>>            
+38066>>>>>>>            Procedure OnClick //Evento que se produce al hacer clic
+38069>>>>>>>                Send RefreshRecord //Actualizamos la información
 38070>>>>>>>            End_Procedure
 38071>>>>>>>
 38071>>>>>>>        End_Object 
@@ -2331,17 +2339,16 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38090>>>>>>>>
 38090>>>>>>>    End_Procedure
 38091>>>>>>>
-38091>>>>>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged
-38094>>>>>>>        // Close after save
-38094>>>>>>>        Send NavigateClose Self
+38091>>>>>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged //OnViewSaved es un evento que se produce después de un guardado de vista exitoso (Request_Save). Un guardado es exitoso si no hubo errores 
+38094>>>>>>>        Send NavigateClose Self //Luego de esto cierra la vista y vuelva a la anterior
 38095>>>>>>>    End_Procedure
 38096>>>>>>>
 38096>>>>>>>    // this will close the view after a delete
-38096>>>>>>>    Procedure OnViewDeleted Handle hoDDO
-38099>>>>>>>        Send NavigateClose Self
+38096>>>>>>>    Procedure OnViewDeleted Handle hoDDO //OnViewDeleted es un evento que se produce después de una eliminación de exitosa (Request_Delete). Una eliminación es exitosa si no hubo errores 
+38099>>>>>>>        Send NavigateClose Self //Tras la eliminación cierra la vista y vuelve a la anterior
 38100>>>>>>>    End_Procedure
 38101>>>>>>>
-38101>>>>>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+38101>>>>>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 38104>>>>>>>        Case Begin
 38104>>>>>>>            Case (NavigateData.eNavigateType = nfFromMain)
 38106>>>>>>>                // If from main, this is a propbably a main file Select to Zoom.
@@ -2406,13 +2413,14 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38153>>>>>            Set peAlign to alignRight
 38154>>>>>
 38154>>>>>            WebRegisterPath ntNavigateForward oZoomPosicion
+38160>>>>>//La navegación que se produce es from main, ya que son la misma tabla
 38160>>>>>
-38160>>>>>            Procedure OnClick
-38163>>>>>                Send NavigatePath
+38160>>>>>            Procedure OnClick //Se produce al hacer clic
+38163>>>>>                Send NavigatePath //Nos lleva a la vista que hayamos puesto en el WebRegisterPath
 38164>>>>>            End_Procedure
 38165>>>>>
-38165>>>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38168>>>>>                Move True to NavigateData.bReadOnly
+38165>>>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38168>>>>>                Move True to NavigateData.bReadOnly //En este caso ReadOnly
 38169>>>>>            End_Procedure
 38170>>>>>
 38170>>>>>        End_Object 
@@ -2420,6 +2428,7 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38171>>>>>
 38171>>>>>
 38171>>>>>        WebRegisterPath ntNavigateForward oZoomPosicion // Le indicamos a donde navegar. Utilizamos NavigateFordward porque SÍ hay intercambio de información
+38177>>>>>//La navegación que se produce es from main, ya que son la misma tabla
 38177>>>>>
 38177>>>>>        Procedure OnRowClick String sRowId //Este es el procedimiento que nos servirá para pinchar sobre la fila y que nos lleve directos al ZOOM que le hemos indicado en el WebRegisterPath
 38180>>>>>            tWebNavigateData NavigateData
@@ -2447,8 +2456,8 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38196>>>>>            Case End
 38196>>>>>        End_Procedure
 38197>>>>>
-38197>>>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38200>>>>>            Move True to NavigateData.bReadOnly
+38197>>>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38200>>>>>            Move True to NavigateData.bReadOnly //En este caso ReadOnly
 38201>>>>>        End_Procedure
 38202>>>>>
 38202>>>>>    End_Object 
@@ -2459,8 +2468,8 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38207>>>>>            Set psCSSClass to "WebPromptMenuItem"
 38208>>>>>            Set psCaption to "Search"
 38209>>>>>
-38209>>>>>            Procedure OnClick
-38212>>>>>                Send Search of oList
+38209>>>>>            Procedure OnClick //Al hacer clic
+38212>>>>>                Send Search of oList //Buscamos en la lista
 38213>>>>>            End_Procedure
 38214>>>>>
 38214>>>>>        End_Object 
@@ -2471,18 +2480,18 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38219>>>>>
 38219>>>>>            WebRegisterPath ntNavigateForward oZoomPosicion
 38225>>>>>
-38225>>>>>            Procedure OnClick
-38228>>>>>                Send NavigatePath
+38225>>>>>            Procedure OnClick //Al hacer clic
+38228>>>>>                Send NavigatePath //Nos lleva a la vista que hayamos colocado en el WebRegisterPath
 38229>>>>>            End_Procedure
 38230>>>>>
-38230>>>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38233>>>>>                Move True to NavigateData.bNewRecord
+38230>>>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38233>>>>>                Move True to NavigateData.bNewRecord //En este caso NewRecord
 38234>>>>>            End_Procedure
 38235>>>>>
 38235>>>>>        End_Object 
 38236>>>>>    End_Object 
 38237>>>>>
-38237>>>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+38237>>>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject  //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 38240>>>>>        WebSet pbRender of oNewButton to True
 38241>>>>>        WebSet pbRender of oDetailButton to True
 38242>>>>>
@@ -2547,6 +2556,7 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38289>>>            Set pbPromptButton to True
 38290>>>
 38290>>>            WebRegisterPath ntNavigateForward oZoomLiga  //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
+38296>>>//La navegación que se produce es from child, ya que su relación es de hijo a padre
 38296>>>
 38296>>>            Procedure OnPrompt //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
 38299>>>                Send NavigatePath
@@ -2571,6 +2581,7 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38318>>>            Set pbPromptButton to True
 38319>>>
 38319>>>            WebRegisterPath ntNavigateForward oZoomEquipo  //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
+38325>>>//La navegación que se produce es from child, ya que su relación es de hijo a padre
 38325>>>
 38325>>>            Procedure OnPrompt  //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
 38328>>>                Send NavigatePath
@@ -2606,10 +2617,11 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38358>>>                    Set piColumnSpan to 4
 38359>>>                    Set piColumnIndex to 0
 38360>>>                    
-38360>>>                    WebRegisterPath ntNavigateForwardCustom oSelectPosicion
+38360>>>                    WebRegisterPath ntNavigateForwardCustom oSelectPosicion //Como no tienen relación no se produce un intercambio de información. Por tanto utilizamos el NavigateFordwardCustom
+38366>>>//La navegación que se produce es from undefined, ya que actualmente las tablas jugador y posicion no tienen una relación directa
 38366>>>
-38366>>>                    Procedure OnClick
-38369>>>                        Send NavigatePath
+38366>>>                    Procedure OnClick //Este es un evento que se produce al clicar
+38369>>>                        Send NavigatePath //Al clicar sobre el buscador podremos introducir lo que busquemos y nos devolverá de la lista los resultados que coincidan con nuestra búsqueda 
 38370>>>                    End_Procedure
 38371>>>                    
 38371>>>                End_Object  // Ahora cuando el usuario pulse sobre el botón será dirigido hacia el select posicion.
@@ -2622,8 +2634,8 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38377>>>            Set psCSSClass to "WebSaveMenuItem"
 38378>>>            Set psCaption to "Save"
 38379>>>
-38379>>>            Procedure OnClick
-38382>>>                Send Request_Save
+38379>>>            Procedure OnClick //Este es un evento que se produce al clicar
+38382>>>                Send Request_Save //Justo después de clicar el programa hace un RequestSave. Este se encarga de guardar los cambios
 38383>>>            End_Procedure
 38384>>>
 38384>>>        End_Object 
@@ -2631,8 +2643,9 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38385>>>        Object oEditBtn is a cWebMenuItem
 38387>>>            Set psCSSClass to "WebEditMenuItem"
 38388>>>            Set psCaption to "Edit"
-38389>>>            Procedure OnClick
-38392>>>                Send ChangeEditMode True
+38389>>>            
+38389>>>            Procedure OnClick //Este es un evento que se produce al clicar
+38392>>>                Send ChangeEditMode True //De esta manera podremos editar, pero en caso de que solo queramos que se pueda leer, bastará con llamar a IsViewReadOnly
 38393>>>                Send SetActionButtons
 38394>>>            End_Procedure
 38395>>>
@@ -2643,8 +2656,8 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38399>>>            Set psCaption to "Delete"
 38400>>>            Set peActionDisplay to adMenu
 38401>>>
-38401>>>            Procedure OnClick
-38404>>>                Send Request_Delete
+38401>>>            Procedure OnClick //Este es un evento que se produce al clicar
+38404>>>                Send Request_Delete //Al clicar se lleva a cabo la eliminación
 38405>>>            End_Procedure
 38406>>>
 38406>>>        End_Object 
@@ -2653,8 +2666,9 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38409>>>            Set psCSSClass to "WebIcon_Refresh"
 38410>>>            Set psCaption to "Clear Changes"
 38411>>>            Set peActionDisplay to adMenu
-38412>>>            Procedure OnClick
-38415>>>                Send RefreshRecord
+38412>>>            
+38412>>>            Procedure OnClick //Este es un evento que se produce al clicar
+38415>>>                Send RefreshRecord  //Al clicar se lleva a cabo la actualización de la información
 38416>>>            End_Procedure
 38417>>>
 38417>>>        End_Object 
@@ -2688,17 +2702,15 @@ Including file: posicion.fd    (C:\DataFlex Projects\Futbol-Web-App-\DDSrc\posic
 38436>>>>
 38436>>>    End_Procedure
 38437>>>
-38437>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged
-38440>>>        // Close after save
-38440>>>        Send NavigateClose Self
+38437>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged //OnViewSaved es un evento que se produce después de un guardado de vista exitoso (Request_Save). Un guardado es exitoso si no hubo errores 
+38440>>>        Send NavigateClose Self //Cierra la vista y vuelve a la anterior después de guardar
 38441>>>    End_Procedure
 38442>>>
-38442>>>    // this will close the view after a delete
-38442>>>    Procedure OnViewDeleted Handle hoDDO
-38445>>>        Send NavigateClose Self
+38442>>>    Procedure OnViewDeleted Handle hoDDO //OnViewDeleted es un evento que se produce después de una eliminación de exitosa (Request_Delete). Una eliminación es exitosa si no hubo errores 
+38445>>>        Send NavigateClose Self //Cierra la vista y vuelve a la anterior después de la eliminación
 38446>>>    End_Procedure
 38447>>>
-38447>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+38447>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 38450>>>        Case Begin
 38450>>>            Case (NavigateData.eNavigateType = nfFromMain)
 38452>>>                // If from main, this is a propbably a main file Select to Zoom.
@@ -2828,13 +2840,14 @@ Including file: SelectJugador.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc
 38549>>>            Set peAlign to alignRight
 38550>>>
 38550>>>            WebRegisterPath ntNavigateForward oZoomJugador
+38556>>>//La navegación que se produce es from main, ya que son la misma tabla
 38556>>>
-38556>>>            Procedure OnClick
-38559>>>                Send NavigatePath
+38556>>>            Procedure OnClick //Este es un evento que se produce al clicar
+38559>>>                Send NavigatePath //Al clicar seremos dirigidos hacia la vista que hayamos puesto en el WebRegisterPath
 38560>>>            End_Procedure
 38561>>>
-38561>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38564>>>                Move True to NavigateData.bReadOnly
+38561>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38564>>>                Move True to NavigateData.bReadOnly //En este caso ReadOnly
 38565>>>            End_Procedure
 38566>>>
 38566>>>        End_Object 
@@ -2842,6 +2855,7 @@ Including file: SelectJugador.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc
 38567>>>
 38567>>>
 38567>>>        WebRegisterPath ntNavigateForward oZoomJugador // Le indicamos a donde navegar. Utilizamos NavigateFordward porque SÍ hay intercambio de información
+38573>>>//La navegación que se produce es from main, ya que son la misma tabla
 38573>>>
 38573>>>        Procedure OnRowClick String sRowId //Este es el procedimiento que nos servirá para pinchar sobre la fila y que nos lleve directos al ZOOM que le hemos indicado en el WebRegisterPath
 38576>>>            tWebNavigateData NavigateData
@@ -2869,8 +2883,8 @@ Including file: SelectJugador.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc
 38592>>>            Case End
 38592>>>        End_Procedure
 38593>>>
-38593>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38596>>>            Move True to NavigateData.bReadOnly
+38593>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38596>>>            Move True to NavigateData.bReadOnly //En este caso ReadOnly
 38597>>>        End_Procedure
 38598>>>
 38598>>>    End_Object 
@@ -2881,8 +2895,8 @@ Including file: SelectJugador.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc
 38603>>>            Set psCSSClass to "WebPromptMenuItem"
 38604>>>            Set psCaption to "Search"
 38605>>>
-38605>>>            Procedure OnClick
-38608>>>                Send Search of oList
+38605>>>            Procedure OnClick //Este es un evento que se produce al clicar
+38608>>>                Send Search of oList //Busca en la lista
 38609>>>            End_Procedure
 38610>>>
 38610>>>        End_Object 
@@ -2892,19 +2906,20 @@ Including file: SelectJugador.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc
 38614>>>            Set psCaption to "New"
 38615>>>
 38615>>>            WebRegisterPath ntNavigateForward oZoomJugador
+38621>>>//La navegación que se produce es from main, ya que son la misma tabla
 38621>>>
-38621>>>            Procedure OnClick
-38624>>>                Send NavigatePath
+38621>>>            Procedure OnClick //Este es un evento que se produce al clicar
+38624>>>                Send NavigatePath //Nos lleva a la vista que le hayamos indicado en WebRegisterPath
 38625>>>            End_Procedure
 38626>>>
-38626>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38629>>>                Move True to NavigateData.bNewRecord
+38626>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38629>>>                Move True to NavigateData.bNewRecord //En este caso NewRecord
 38630>>>            End_Procedure
 38631>>>
 38631>>>        End_Object 
 38632>>>    End_Object 
 38633>>>
-38633>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+38633>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject  //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 38636>>>        WebSet pbRender of oNewButton to True
 38637>>>        WebSet pbRender of oDetailButton to True
 38638>>>
@@ -2981,6 +2996,7 @@ Including file: ZoomEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zo
 38681>>>            Set pbPromptButton to True
 38682>>>
 38682>>>            WebRegisterPath ntNavigateForward oZoomLiga  //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
+38688>>>//La navegación que se produce es from child, ya que su navegación es de tabla hija a padre
 38688>>>
 38688>>>            Procedure OnPrompt  //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
 38691>>>                Send NavigatePath
@@ -3012,8 +3028,8 @@ Including file: ZoomEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zo
 38716>>>            Set psCSSClass to "WebSaveMenuItem"
 38717>>>            Set psCaption to "Save"
 38718>>>
-38718>>>            Procedure OnClick
-38721>>>                Send Request_Save
+38718>>>            Procedure OnClick //Al clicar
+38721>>>                Send Request_Save //Se guarda
 38722>>>            End_Procedure
 38723>>>
 38723>>>        End_Object 
@@ -3033,8 +3049,8 @@ Including file: ZoomEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zo
 38738>>>            Set psCaption to "Delete"
 38739>>>            Set peActionDisplay to adMenu
 38740>>>
-38740>>>            Procedure OnClick
-38743>>>                Send Request_Delete
+38740>>>            Procedure OnClick //Al clicar
+38743>>>                Send Request_Delete //Se elimina
 38744>>>            End_Procedure
 38745>>>
 38745>>>        End_Object 
@@ -3078,17 +3094,15 @@ Including file: ZoomEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zo
 38775>>>>
 38775>>>    End_Procedure
 38776>>>
-38776>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged
-38779>>>        // Close after save
-38779>>>        Send NavigateClose Self
+38776>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged //OnViewSaved es un evento que se produce después de un guardado de vista exitoso (Request_Save). Un guardado es exitoso si no hubo errores 
+38779>>>        Send NavigateClose Self //Cierra la vista y vuelve a la anterior
 38780>>>    End_Procedure
 38781>>>
-38781>>>    // this will close the view after a delete
-38781>>>    Procedure OnViewDeleted Handle hoDDO
-38784>>>        Send NavigateClose Self
+38781>>>    Procedure OnViewDeleted Handle hoDDO //OnViewDeleted es un evento que se produce después de una eliminación de exitosa (Request_Delete). Una eliminación es exitosa si no hubo errores 
+38784>>>        Send NavigateClose Self //Cierra la vista y vuelve a la anterior
 38785>>>    End_Procedure
 38786>>>
-38786>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+38786>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject  //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 38789>>>        Case Begin
 38789>>>            Case (NavigateData.eNavigateType = nfFromMain)
 38791>>>                // If from main, this is a propbably a main file Select to Zoom.
@@ -3195,13 +3209,14 @@ Including file: SelectEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\
 38866>>>            Set peAlign to alignRight
 38867>>>
 38867>>>            WebRegisterPath ntNavigateForward oZoomEquipo
+38873>>>//La navegación que se produce es from main, ya que son la misma tabla
 38873>>>
-38873>>>            Procedure OnClick
-38876>>>                Send NavigatePath
+38873>>>            Procedure OnClick //Al clicar
+38876>>>                Send NavigatePath //Se navega a la vista que hayamos colocado en WebRegisterPath
 38877>>>            End_Procedure
 38878>>>
-38878>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38881>>>                Move True to NavigateData.bReadOnly
+38878>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38881>>>                Move True to NavigateData.bReadOnly //En este caso ReadOnly
 38882>>>            End_Procedure
 38883>>>
 38883>>>        End_Object 
@@ -3209,6 +3224,7 @@ Including file: SelectEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\
 38884>>>
 38884>>>
 38884>>>        WebRegisterPath ntNavigateForward oZoomEquipo // Le indicamos a donde navegar. Utilizamos NavigateFordward porque SÍ hay intercambio de información
+38890>>>//La navegación que se produce es from main, ya que son la misma tabla
 38890>>>
 38890>>>        Procedure OnRowClick String sRowId  //Este es el procedimiento que nos servirá para pinchar sobre la fila y que nos lleve directos al ZOOM que le hemos indicado en el WebRegisterPath
 38893>>>            tWebNavigateData NavigateData
@@ -3232,12 +3248,13 @@ Including file: SelectEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\
 38908>>>
 38908>>>                Case Else
 38908>>>                    Send NavigateForward of oZoomEquipo Self //Le indicamos donde debe ir en caso de que se cumpla
+38909>>>//La navegación que se produce es from main, ya que son la misma tabla
 38909>>>
 38909>>>            Case End
 38909>>>        End_Procedure
 38910>>>
-38910>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38913>>>            Move True to NavigateData.bReadOnly
+38910>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38913>>>            Move True to NavigateData.bReadOnly //En este caso ReadOnly
 38914>>>        End_Procedure
 38915>>>
 38915>>>    End_Object 
@@ -3248,8 +3265,8 @@ Including file: SelectEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\
 38920>>>            Set psCSSClass to "WebPromptMenuItem"
 38921>>>            Set psCaption to "Search"
 38922>>>
-38922>>>            Procedure OnClick
-38925>>>                Send Search of oList
+38922>>>            Procedure OnClick //Al clicar 
+38925>>>                Send Search of oList //Buscar en la lista
 38926>>>            End_Procedure
 38927>>>
 38927>>>        End_Object 
@@ -3259,19 +3276,20 @@ Including file: SelectEquipo.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\
 38931>>>            Set psCaption to "New"
 38932>>>
 38932>>>            WebRegisterPath ntNavigateForward oZoomEquipo
+38938>>>//La navegación que se produce es from main, ya que son la misma tabla
 38938>>>
-38938>>>            Procedure OnClick
-38941>>>                Send NavigatePath
+38938>>>            Procedure OnClick //Al clicar
+38941>>>                Send NavigatePath //Navegar a la vista que hayamos puesto en WebRegisterPath
 38942>>>            End_Procedure
 38943>>>
-38943>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-38946>>>                Move True to NavigateData.bNewRecord
+38943>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+38946>>>                Move True to NavigateData.bNewRecord //En este caso NewRecord
 38947>>>            End_Procedure
 38948>>>
 38948>>>        End_Object 
 38949>>>    End_Object 
 38950>>>
-38950>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+38950>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 38953>>>        WebSet pbRender of oNewButton to True
 38954>>>        WebSet pbRender of oDetailButton to True
 38955>>>
@@ -3374,9 +3392,10 @@ Including file: ZoomLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zoom
 39027>>>            Set piColumnSpan to 4 
 39028>>>            
 39028>>>            WebRegisterPath ntNavigateForward oSelectEquipo
-39034>>>             
-39034>>>            Procedure OnClick 
-39037>>>                Send NavigatePath 
+39034>>>//La navegación que se produce es from parent, ya que su navegación es de tabla padre a tabla hija
+39034>>>            
+39034>>>            Procedure OnClick //Al clicar
+39037>>>                Send NavigatePath //Navegamos a la vista que hayamos proporcionado en el WebRegisterPath
 39038>>>            End_Procedure 
 39039>>>            
 39039>>>    End_Object 
@@ -3406,8 +3425,8 @@ Including file: ZoomLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zoom
 39059>>>            Set psCSSClass to "WebSaveMenuItem"
 39060>>>            Set psCaption to "Save"
 39061>>>
-39061>>>            Procedure OnClick
-39064>>>                Send Request_Save
+39061>>>            Procedure OnClick //Al clicar
+39064>>>                Send Request_Save //Guardamos
 39065>>>            End_Procedure
 39066>>>
 39066>>>        End_Object 
@@ -3415,8 +3434,9 @@ Including file: ZoomLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zoom
 39067>>>        Object oEditBtn is a cWebMenuItem
 39069>>>            Set psCSSClass to "WebEditMenuItem"
 39070>>>            Set psCaption to "Edit"
-39071>>>            Procedure OnClick
-39074>>>                Send ChangeEditMode True
+39071>>>            
+39071>>>            Procedure OnClick //Al clicar
+39074>>>                Send ChangeEditMode True //Editamos
 39075>>>                Send SetActionButtons
 39076>>>            End_Procedure
 39077>>>
@@ -3427,8 +3447,8 @@ Including file: ZoomLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zoom
 39081>>>            Set psCaption to "Delete"
 39082>>>            Set peActionDisplay to adMenu
 39083>>>
-39083>>>            Procedure OnClick
-39086>>>                Send Request_Delete
+39083>>>            Procedure OnClick //Al clicar
+39086>>>                Send Request_Delete //Eliminamos
 39087>>>            End_Procedure
 39088>>>
 39088>>>        End_Object 
@@ -3437,8 +3457,9 @@ Including file: ZoomLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zoom
 39091>>>            Set psCSSClass to "WebIcon_Refresh"
 39092>>>            Set psCaption to "Clear Changes"
 39093>>>            Set peActionDisplay to adMenu
-39094>>>            Procedure OnClick
-39097>>>                Send RefreshRecord
+39094>>>            
+39094>>>            Procedure OnClick //Al clicar
+39097>>>                Send RefreshRecord //Actualizamos Language$Current información
 39098>>>            End_Procedure
 39099>>>
 39099>>>        End_Object 
@@ -3472,17 +3493,15 @@ Including file: ZoomLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Zoom
 39118>>>>
 39118>>>    End_Procedure
 39119>>>
-39119>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged
-39122>>>        // Close after save
-39122>>>        Send NavigateClose Self
+39119>>>    Procedure OnViewSaved Handle hoServer Boolean bChanged //OnViewSaved es un evento que se produce después de un guardado de vista exitoso (Request_Save). Un guardado es exitoso si no hubo errores 
+39122>>>        Send NavigateClose Self //Cierra la vista y vuelve a la anterior
 39123>>>    End_Procedure
 39124>>>
-39124>>>    // this will close the view after a delete
-39124>>>    Procedure OnViewDeleted Handle hoDDO
-39127>>>        Send NavigateClose Self
+39124>>>    Procedure OnViewDeleted Handle hoDDO //OnViewDeleted es un evento que se produce después de una eliminación de exitosa (Request_Delete). Una eliminación es exitosa si no hubo errores 
+39127>>>        Send NavigateClose Self //Cierra la vista y vuelve a la anterior
 39128>>>    End_Procedure
 39129>>>
-39129>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+39129>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 39132>>>        Case Begin
 39132>>>            Case (NavigateData.eNavigateType = nfFromMain)
 39134>>>                // If from main, this is a propbably a main file Select to Zoom.
@@ -3578,13 +3597,14 @@ Including file: SelectLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Se
 39199>>>            Set peAlign to alignRight
 39200>>>
 39200>>>            WebRegisterPath ntNavigateForward oZoomLiga
+39206>>>//La navegación que se produce es from main, ya que son la misma tabla
 39206>>>
-39206>>>            Procedure OnClick
-39209>>>                Send NavigatePath
+39206>>>            Procedure OnClick //Al clicar
+39209>>>                Send NavigatePath //Navegamos a la vista que hayamos proporcionado en el WebRegisterPath
 39210>>>            End_Procedure
 39211>>>
-39211>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-39214>>>                Move True to NavigateData.bReadOnly
+39211>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+39214>>>                Move True to NavigateData.bReadOnly //En este caso ReadOnly
 39215>>>            End_Procedure
 39216>>>
 39216>>>        End_Object 
@@ -3592,6 +3612,7 @@ Including file: SelectLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Se
 39217>>>
 39217>>> 
 39217>>>        WebRegisterPath ntNavigateForward oZoomLiga // Le indicamos a donde navegar. Utilizamos NavigateFordward porque SÍ hay intercambio de información
+39223>>>//La navegación que se produce es from main, ya que son la misma tabla
 39223>>>
 39223>>>        Procedure OnRowClick String sRowId  //Este es el procedimiento que nos servirá para pinchar sobre la fila y que nos lleve directos al ZOOM que le hemos indicado en el WebRegisterPath
 39226>>>            tWebNavigateData NavigateData
@@ -3620,8 +3641,8 @@ Including file: SelectLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Se
 39242>>>            Case End
 39242>>>        End_Procedure
 39243>>>
-39243>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-39246>>>            Move True to NavigateData.bReadOnly
+39243>>>        Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+39246>>>            Move True to NavigateData.bReadOnly //En este caso ReadOnly
 39247>>>        End_Procedure
 39248>>>
 39248>>>    End_Object 
@@ -3632,8 +3653,8 @@ Including file: SelectLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Se
 39253>>>            Set psCSSClass to "WebPromptMenuItem"
 39254>>>            Set psCaption to "Search"
 39255>>>
-39255>>>            Procedure OnClick
-39258>>>                Send Search of oList
+39255>>>            Procedure OnClick //Al clicar
+39258>>>                Send Search of oList //Buscamos en la lista
 39259>>>            End_Procedure
 39260>>>
 39260>>>        End_Object 
@@ -3644,18 +3665,18 @@ Including file: SelectLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Se
 39265>>>
 39265>>>            WebRegisterPath ntNavigateForward oZoomLiga
 39271>>>
-39271>>>            Procedure OnClick
-39274>>>                Send NavigatePath
+39271>>>            Procedure OnClick //Al clicar
+39274>>>                Send NavigatePath //Navegamos a la vista que hayamos colocado en el WebRegisterPath
 39275>>>            End_Procedure
 39276>>>
-39276>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-39279>>>                Move True to NavigateData.bNewRecord
+39276>>>            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView //OnGetNavigateForwardData es un evento de navegación que se encarga de proporcionar información complementaria
+39279>>>                Move True to NavigateData.bNewRecord //En este caso NewRecord
 39280>>>            End_Procedure
 39281>>>
 39281>>>        End_Object 
 39282>>>    End_Object 
 39283>>>
-39283>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+39283>>>    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject //OnNavigateFordward. Usará OnNavigateForward es un evento que nos puede servir para cambiar los títulos y etiquetas proporcionando así más información al usuario o para ocultar y mostrar botones según cómo se utilice esta vista. hoInvokingView Integer hoInvokingObject es el identificador de la vista que la invocó y el objeto que la invocó respectivamente
 39286>>>        WebSet pbRender of oNewButton to True
 39287>>>        WebSet pbRender of oDetailButton to True
 39288>>>
@@ -3689,7 +3710,7 @@ Including file: SelectLiga.wo    (C:\DataFlex Projects\Futbol-Web-App-\AppSrc\Se
 39304>Send StartWebApp of oWebApp
 39305>
 Summary
-Memory Available: 18289381376
+Memory Available: 16268046336
 Total Warnings : 0
 Total Errors   : 0
 Total Symbols  : 25667
