@@ -12,6 +12,7 @@ Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
 Use centrenadorDataDictionary.dd
 
+
 Object oZoomEntrenador is a cWebView
     Set piColumnCount to 12
     Set psCaption to "ZoomEntrenador"
@@ -45,13 +46,15 @@ Object oZoomEntrenador is a cWebView
             Set piColumnSpan to 12
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Nombre"
+            Set psLabel to "Liga"
             Set pbPromptButton to True
 
-// ToDo: Fill in the from-child parent Select view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oSelectView
+//ESTO MISMO SE REPITE EN EL RESTO DE ZOOM
 
-            Procedure OnPrompt
+            WebRegisterPath ntNavigateForward oZoomLiga //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
+//La navegación que se produce es from child, ya que viaja de una tabla hija hacia una padre
+
+            Procedure OnPrompt //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
                 Send NavigatePath
             End_Procedure
         End_Object 
@@ -61,46 +64,24 @@ Object oZoomEntrenador is a cWebView
             Set piColumnSpan to 10
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Pais"
-            Set pbPromptButton to True
-
-// ToDo: Fill in the from-child parent Select view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oSelectView
-
-            Procedure OnPrompt
-                Send NavigatePath
-            End_Procedure
-        End_Object 
-
-        Object oligaEquipos is a cWebForm
-            Entry_Item liga.Equipos
-            Set piColumnSpan to 2
-            Set piColumnIndex to 0
-            Set peLabelPosition to lpTop
-            Set psLabel to "Equipos"
-        End_Object 
-
-        Object oligaEquiposMax is a cWebForm
-            Entry_Item liga.EquiposMax
-            Set piColumnSpan to 2
-            Set piColumnIndex to 0
-            Set peLabelPosition to lpTop
-            Set psLabel to "EquiposMax"
-        End_Object 
+            Set psLabel to "Pais de liga"
+            Set pbPromptButton to False //Ocultamos la lupa
+End_Object 
 
         Object oequipoNombre is a cWebForm
             Entry_Item equipo.Nombre
             Set piColumnSpan to 12
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Nombre"
+            Set psLabel to "Equipo actual"
             Set pbPromptButton to True
 
-// ToDo: Fill in the from-child parent Select view object name for navigate forward
-//            WebRegisterPath ntNavigateForward oSelectView
+
+            WebRegisterPath ntNavigateForward oZoomEquipo //Le indicamos a donde ir. De nuevo hacemos uso del NavigateFordward, ya que existe intercambio de información, en caso de no haber intercambio de información haría uso de NavigateFordwardCustom.
+//La navegación que se produce es from child, ya que la relación que estos mantienen es de hijo a padre
 
             Procedure OnPrompt
-                Send NavigatePath
+                Send NavigatePath //OnPrompt es nuestro invoking object y al pulsarlo nos lleva a donde hemos indicado en el WebRegisterPath
             End_Procedure
         End_Object 
 
@@ -109,7 +90,7 @@ Object oZoomEntrenador is a cWebView
             Set piColumnSpan to 12
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Nombre"
+            Set psLabel to "Entrenador nombre"
         End_Object 
 
         Object oentrenadorApellido is a cWebForm
@@ -117,7 +98,7 @@ Object oZoomEntrenador is a cWebView
             Set piColumnSpan to 12
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Apellido"
+            Set psLabel to "Entrenador apellido"
         End_Object 
 
         Object oentrenadorNacionalidad is a cWebForm
@@ -125,7 +106,7 @@ Object oZoomEntrenador is a cWebView
             Set piColumnSpan to 10
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-            Set psLabel to "Nacionalidad"
+            Set psLabel to "Nacionalidad de entrenador"
         End_Object 
     End_Object 
 
@@ -135,8 +116,8 @@ Object oZoomEntrenador is a cWebView
             Set psCSSClass to "WebSaveMenuItem"
             Set psCaption to "Save"
 
-            Procedure OnClick
-                Send Request_Save
+            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebSaveMenuItem
+                Send Request_Save //Justo después de clicar el programa hace un RequestSave. Este se encarga de guardar los cambios
             End_Procedure
 
         End_Object 
@@ -144,8 +125,9 @@ Object oZoomEntrenador is a cWebView
         Object oEditBtn is a cWebMenuItem
             Set psCSSClass to "WebEditMenuItem"
             Set psCaption to "Edit"
-            Procedure OnClick
-                Send ChangeEditMode True
+            
+            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebEditMenuItem
+                Send ChangeEditMode True //De esta manera podremos editar, pero en caso de que solo queramos que se pueda leer, bastará con llamar a IsViewReadOnly
                 Send SetActionButtons
             End_Procedure
 
@@ -156,8 +138,8 @@ Object oZoomEntrenador is a cWebView
             Set psCaption to "Delete"
             Set peActionDisplay to adMenu
 
-            Procedure OnClick
-                Send Request_Delete
+            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebDeleteMenuItem
+                Send Request_Delete //Al clicar se lleva a cabo la eliminación
             End_Procedure
 
         End_Object 
@@ -166,8 +148,9 @@ Object oZoomEntrenador is a cWebView
             Set psCSSClass to "WebIcon_Refresh"
             Set psCaption to "Clear Changes"
             Set peActionDisplay to adMenu
-            Procedure OnClick
-                Send RefreshRecord
+            
+            Procedure OnClick //Este es un evento que se produce al clicar, en este caso, sobre el WebIcon_Refresh
+                Send RefreshRecord //Al clicar se lleva a cabo la actualización de la información
             End_Procedure
 
         End_Object 
@@ -198,14 +181,14 @@ Object oZoomEntrenador is a cWebView
         End
     End_Procedure
 
-    Procedure OnViewSaved Handle hoServer Boolean bChanged
+    Procedure OnViewSaved Handle hoServer Boolean bChanged //OnViewSaved es un evento que se produce después de un guardado de vista exitoso (Request_Save). Un guardado es exitoso si no hubo errores 
         // Close after save
-        Send NavigateClose Self
+        Send NavigateClose Self //En este caso lo que hace es cerrar la vista y llevarnos a la vista de la que venimos
     End_Procedure
 
     // this will close the view after a delete
-    Procedure OnViewDeleted Handle hoDDO
-        Send NavigateClose Self
+    Procedure OnViewDeleted Handle hoDDO //OnViewDeleted es un evento que se produce después de una eliminación de exitosa (Request_Delete). Una eliminación es exitosa si no hubo errores 
+        Send NavigateClose Self //En este caso lo que hace es cerrar la vista y llevarnos a la vista de la que venimos
     End_Procedure
 
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
